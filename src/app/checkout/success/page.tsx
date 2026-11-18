@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
@@ -8,7 +8,7 @@ import { CheckCircle2, Sparkles, ArrowRight, Package, Truck, ShieldCheck, Shoppi
 import { Order } from '@/types';
 import { formatUSD, formatUZS } from '@/data/products';
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
   const method = searchParams.get('method') || 'card';
@@ -160,5 +160,17 @@ export default function CheckoutSuccessPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
+        <div className="w-10 h-10 border-4 border-glow-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }

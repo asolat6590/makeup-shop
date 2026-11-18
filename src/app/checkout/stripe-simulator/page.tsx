@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CreditCard, ShieldCheck, Lock, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { formatUSD } from '@/data/products';
 
-export default function StripeSimulatorPage() {
+function StripeSimulatorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -164,5 +164,17 @@ export default function StripeSimulatorPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function StripeSimulatorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
+        <div className="w-10 h-10 border-4 border-[#635BFF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <StripeSimulatorContent />
+    </Suspense>
   );
 }

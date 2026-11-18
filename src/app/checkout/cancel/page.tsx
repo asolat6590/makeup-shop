@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { XCircle, RefreshCw, ShoppingBag, ArrowLeft, ShieldAlert } from 'lucide-react';
 
-export default function CheckoutCancelPage() {
+function CancelContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
   const method = searchParams.get('method');
@@ -72,5 +72,17 @@ export default function CheckoutCancelPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function CheckoutCancelPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
+        <div className="w-10 h-10 border-4 border-glow-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+      </div>
+    }>
+      <CancelContent />
+    </Suspense>
   );
 }

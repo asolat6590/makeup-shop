@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, Sparkles, X } from 'lucide-react';
 import { PRODUCTS, CATEGORIES } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
-import { ProductCategory } from '@/types';
 
-export default function CatalogPage() {
+function CatalogContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || 'all';
 
@@ -186,5 +185,18 @@ export default function CatalogPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function CatalogPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <div className="w-10 h-10 border-4 border-glow-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-xs text-luxury-muted uppercase tracking-widest">Загрузка каталога...</p>
+      </div>
+    }>
+      <CatalogContent />
+    </Suspense>
   );
 }

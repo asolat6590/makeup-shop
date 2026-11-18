@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ShieldCheck, Lock, CheckCircle2, XCircle, Loader2, ArrowRight, Smartphone, Terminal } from 'lucide-react';
 import { USD_TO_UZS } from '@/data/products';
 
-export default function PaymeSandboxPage() {
+function PaymeSandboxContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -301,5 +301,17 @@ export default function PaymeSandboxPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function PaymeSandboxPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
+        <div className="w-10 h-10 border-4 border-[#14E5D4] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <PaymeSandboxContent />
+    </Suspense>
   );
 }
