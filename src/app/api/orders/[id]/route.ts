@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getOrderById, updateOrderStatus } from '@/lib/db';
+import { getOrderById, updateOrderStatus, saveOrder } from '@/lib/db';
 import { OrderStatus } from '@/types';
 
 export async function GET(
@@ -30,7 +30,18 @@ export async function PATCH(
       return NextResponse.json({ error: 'Недопустимый статус заказа' }, { status: 400 });
     }
 
-    const updated = updateOrderStatus(id, status, paymentStatus, paymentId);
+    let updated = updateOrderStatus(id, status, paymentStatus, paymentId);
+    if (!updated && body.order) {
+      const orderToSave = {
+        ...body.order,
+        id,
+        status: status || body.order.status || 'pending',
+        paymentStatus: paymentStatus || body.order.paymentStatus || 'pending',
+        paymentId: paymentId || body.order.paymentId,
+      };
+      updated = saveOrder(orderToSave);
+    }
+
     if (!updated) {
       return NextResponse.json({ error: 'Заказ не найден' }, { status: 404 });
     }

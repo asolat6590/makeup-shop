@@ -38,13 +38,32 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
       try {
         const res = await fetch(`/api/orders/${id}`);
         const data = await res.json();
-        if (!res.ok || !data.order) {
-          setError(data.error || 'Заказ не найден');
-        } else {
+        if (res.ok && data.order) {
           setOrder(data.order);
+        } else {
+          // Client-side fallback from localStorage
+          const localSaved = localStorage.getItem(`glow_beauty_order_${id}`);
+          if (localSaved) {
+            const parsed = JSON.parse(localSaved);
+            setOrder(parsed);
+            // Sync back to server in background
+            fetch('/api/orders', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(parsed),
+            }).catch(() => {});
+          } else {
+            setError(data.error || 'Заказ не найден');
+          }
         }
       } catch (err: any) {
-        setError(err.message || 'Ошибка загрузки заказа');
+        // Fallback to localStorage on network or server error
+        const localSaved = localStorage.getItem(`glow_beauty_order_${id}`);
+        if (localSaved) {
+          setOrder(JSON.parse(localSaved));
+        } else {
+          setError(err.message || 'Ошибка загрузки заказа');
+        }
       } finally {
         setLoading(false);
       }

@@ -114,13 +114,21 @@ export default function CheckoutPage() {
 
       const createdOrder = orderData.order;
 
+      // Save to localStorage for client-side persistence across pages
+      try {
+        localStorage.setItem(`glow_beauty_order_${createdOrder.id}`, JSON.stringify(createdOrder));
+        const savedList = JSON.parse(localStorage.getItem('glow_beauty_orders_list') || '[]');
+        savedList.unshift(createdOrder);
+        localStorage.setItem('glow_beauty_orders_list', JSON.stringify(savedList));
+      } catch (e) {}
+
       // 2. Initiate Payment Session according to selected provider
       if (paymentMethod === 'stripe') {
-        // Stripe flow
+        // Stripe flow - pass order payload as fallback for distributed serverless instances
         const stripeRes = await fetch('/api/checkout/stripe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: createdOrder.id }),
+          body: JSON.stringify({ orderId: createdOrder.id, order: createdOrder }),
         });
 
         const stripeData = await stripeRes.json();
@@ -134,11 +142,11 @@ export default function CheckoutPage() {
         // Redirect to Stripe checkout URL (or realistic test simulator)
         window.location.href = stripeData.url;
       } else {
-        // Payme Uzbekistan flow
+        // Payme Uzbekistan flow - pass order payload as fallback
         const paymeRes = await fetch('/api/payments/payme/create', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: createdOrder.id }),
+          body: JSON.stringify({ orderId: createdOrder.id, order: createdOrder }),
         });
 
         const paymeData = await paymeRes.json();

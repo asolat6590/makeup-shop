@@ -1,9 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { Order, OrderStatus } from '@/types';
-
-const DATA_DIR = path.join(process.cwd(), '.data');
-const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
 // Initial seed orders for demonstration in the admin panel
 const INITIAL_ORDERS: Order[] = [
@@ -109,38 +107,86 @@ const INITIAL_ORDERS: Order[] = [
   }
 ];
 
-function ensureStorage(): void {
+// Persistent global memory cache across serverless function invocations
+declare global {
+  // eslint-disable-next-line no-var
+  var __glow_orders_cache: Order[] | undefined;
+}
+
+if (!globalThis.__glow_orders_cache) {
+  globalThis.__glow_orders_cache = [...INITIAL_ORDERS];
+}
+
+// In serverless environments like Vercel, the root folder is read-only.
+// os.tmpdir() (/tmp) is the only writable filesystem location.
+function getStorageFilePath(): string {
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    return path.join(os.tmpdir(), 'glow_beauty_orders.json');
+  }
+  return path.join(process.cwd(), '.data', 'orders.json');
+}
+
+function loadOrdersFromDisk(): Order[] {
+  const filePath = getStorageFilePath();
   try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(ORDERS_FILE)) {
-      fs.writeFileSync(ORDERS_FILE, JSON.stringify(INITIAL_ORDERS, null, 2), 'utf-8');
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      const parsed: Order[] = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
   } catch (err) {
-    console.error('Error ensuring orders storage directory:', err);
+    // Silently fallback to memory cache if disk is inaccessible
+  }
+  return globalThis.__glow_orders_cache || INITIAL_ORDERS;
+}
+
+function persistOrdersToDisk(orders: Order[]): void {
+  const filePath = getStorageFilePath();
+  try {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(filePath, JSON.stringify(orders, null, 2), 'utf-8');
+  } catch (err) {
+    // If filesystem write fails on serverless, in-memory cache still holds the orders!
   }
 }
 
 export function getAllOrders(): Order[] {
-  ensureStorage();
-  try {
-    const raw = fs.readFileSync(ORDERS_FILE, 'utf-8');
-    const orders: Order[] = JSON.parse(raw);
-    return orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  } catch (err) {
-    console.error('Error reading orders file:', err);
-    return INITIAL_ORDERS;
+  // Try loading latest from disk, merge with global memory cache
+  const diskOrders = loadOrdersFromDisk();
+  const memoryOrders = globalThis.__glow_orders_cache || [];
+
+  // Merge unique orders by ID
+  const map = new Map<string, Order>();
+  for (const o of INITIAL_ORDERS) {
+    map.set(o.id, o);
   }
+  for (const o of diskOrders) {
+    map.set(o.id, o);
+  }
+  for (const o of memoryOrders) {
+    map.set(o.id, o);
+  }
+
+  const merged = Array.from(map.values()).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  globalThis.__glow_orders_cache = merged;
+  return merged;
 }
 
 export function getOrderById(id: string): Order | undefined {
+  if (!id) return undefined;
   const orders = getAllOrders();
-  return orders.find(o => o.id === id);
+  return orders.find(o => o.id.toLowerCase() === id.toLowerCase());
 }
 
 export function saveOrder(order: Order): Order {
-  ensureStorage();
   const orders = getAllOrders();
   const existingIdx = orders.findIndex(o => o.id === order.id);
 
@@ -154,11 +200,8 @@ export function saveOrder(order: Order): Order {
     orders.unshift(order);
   }
 
-  try {
-    fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Error saving orders to disk:', err);
-  }
+  globalThis.__glow_orders_cache = orders;
+  persistOrdersToDisk(orders);
 
   return order;
 }

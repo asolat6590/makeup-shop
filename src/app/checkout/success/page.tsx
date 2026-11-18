@@ -40,9 +40,24 @@ function SuccessContent() {
         const data = await res.json();
         if (data.order) {
           setOrder(data.order);
+        } else {
+          const localSaved = localStorage.getItem(`glow_beauty_order_${orderId}`);
+          if (localSaved) {
+            const parsed = JSON.parse(localSaved);
+            parsed.status = 'paid';
+            parsed.paymentStatus = 'succeeded';
+            setOrder(parsed);
+          }
         }
       } catch (e) {
         console.error('Error loading order in success page:', e);
+        const localSaved = localStorage.getItem(`glow_beauty_order_${orderId}`);
+        if (localSaved) {
+          const parsed = JSON.parse(localSaved);
+          parsed.status = 'paid';
+          parsed.paymentStatus = 'succeeded';
+          setOrder(parsed);
+        }
       } finally {
         setLoading(false);
       }

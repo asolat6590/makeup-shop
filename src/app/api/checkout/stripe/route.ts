@@ -1,16 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getOrderById } from '@/lib/db';
+import { getOrderById, saveOrder } from '@/lib/db';
 import { createStripeCheckoutSession } from '@/lib/payments/stripe';
 
 export async function POST(request: Request) {
   try {
-    const { orderId } = await request.json();
+    const body = await request.json();
+    const { orderId, order: fallbackOrder } = body;
 
-    if (!orderId) {
+    if (!orderId && !fallbackOrder?.id) {
       return NextResponse.json({ error: 'orderId обязателен' }, { status: 400 });
     }
 
-    const order = getOrderById(orderId);
+    const effectiveId = orderId || fallbackOrder?.id;
+    let order = getOrderById(effectiveId);
+
+    // If order was created in another serverless lambda instance, sync it now
+    if (!order && fallbackOrder) {
+      order = saveOrder(fallbackOrder);
+    }
+
     if (!order) {
       return NextResponse.json({ error: 'Заказ не найден' }, { status: 404 });
     }
