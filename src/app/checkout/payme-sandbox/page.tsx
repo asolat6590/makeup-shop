@@ -96,6 +96,18 @@ function PaymeSandboxContent() {
     addLog(`[Payme -> Glow Beauty] SMS код подтвержден. Вызов метода PerformTransaction (ID: ${txId})...`);
 
     try {
+      // Update local storage
+      try {
+        const localSaved = localStorage.getItem(`glow_beauty_order_${orderId}`);
+        if (localSaved) {
+          const parsed = JSON.parse(localSaved);
+          parsed.status = 'paid';
+          parsed.paymentStatus = 'succeeded';
+          parsed.paymentId = txId;
+          localStorage.setItem(`glow_beauty_order_${orderId}`, JSON.stringify(parsed));
+        }
+      } catch (e) {}
+
       // PerformTransaction triggers DB status update to 'paid'
       const performRes = await fetch('/api/payments/payme/callback', {
         method: 'POST',

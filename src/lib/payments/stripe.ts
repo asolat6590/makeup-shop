@@ -100,7 +100,8 @@ export async function createStripeCheckoutSession(
   // 2. Test Mode Simulator (Educational safe fallback)
   // Generates a mock Stripe Checkout session that allows testing card payment flow
   const mockSessionId = `cs_test_${Math.random().toString(36).substring(2, 15)}_${Date.now()}`;
-  const simulatedCheckoutUrl = `${origin}/checkout/stripe-simulator?session_id=${mockSessionId}&order_id=${order.id}&amount=${order.total}`;
+  // Use relative URL so it never redirects away from Vercel / current host
+  const simulatedCheckoutUrl = `/checkout/stripe-simulator?session_id=${mockSessionId}&order_id=${order.id}&amount=${order.total}`;
 
   return {
     sessionId: mockSessionId,

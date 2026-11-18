@@ -140,7 +140,14 @@ export default function CheckoutPage() {
         clearCart();
 
         // Redirect to Stripe checkout URL (or realistic test simulator)
-        window.location.href = stripeData.url;
+        if (stripeData.url.startsWith('/') || stripeData.url.includes('/checkout/stripe-simulator')) {
+          const path = stripeData.url.startsWith('/')
+            ? stripeData.url
+            : new URL(stripeData.url, window.location.origin).pathname + new URL(stripeData.url, window.location.origin).search;
+          router.push(path);
+        } else {
+          window.location.href = stripeData.url;
+        }
       } else {
         // Payme Uzbekistan flow - pass order payload as fallback
         const paymeRes = await fetch('/api/payments/payme/create', {
@@ -158,7 +165,8 @@ export default function CheckoutPage() {
         clearCart();
 
         // Redirect to Payme Interactive Sandbox interface
-        window.location.href = paymeData.sandboxModalUrl || `/checkout/payme-sandbox?order_id=${createdOrder.id}&amount=${paymeData.amountInUzs}`;
+        const targetUrl = paymeData.sandboxModalUrl || `/checkout/payme-sandbox?order_id=${createdOrder.id}&amount=${paymeData.amountInUzs}`;
+        router.push(targetUrl);
       }
     } catch (err: any) {
       console.error('Checkout error:', err);

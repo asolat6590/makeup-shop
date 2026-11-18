@@ -22,6 +22,18 @@ function StripeSimulatorContent() {
   const handlePaySuccess = async () => {
     setIsProcessing(true);
     try {
+      // Update localStorage immediately
+      try {
+        const localSaved = localStorage.getItem(`glow_beauty_order_${orderId}`);
+        if (localSaved) {
+          const parsed = JSON.parse(localSaved);
+          parsed.status = 'paid';
+          parsed.paymentStatus = 'succeeded';
+          parsed.paymentId = sessionId;
+          localStorage.setItem(`glow_beauty_order_${orderId}`, JSON.stringify(parsed));
+        }
+      } catch (e) {}
+
       // Update order status in backend database to paid
       if (orderId) {
         await fetch(`/api/orders/${orderId}`, {
@@ -36,7 +48,7 @@ function StripeSimulatorContent() {
       }
       setTimeout(() => {
         router.push(`/checkout/success?session_id=${sessionId}&order_id=${orderId}&method=stripe`);
-      }, 800);
+      }, 500);
     } catch (e) {
       console.error(e);
       router.push(`/checkout/success?session_id=${sessionId}&order_id=${orderId}&method=stripe`);
