@@ -1,0 +1,211 @@
+[
+  {
+    "id": "ORD-6561-GB",
+    "createdAt": "2026-11-18T10:32:31.798Z",
+    "updatedAt": "2026-11-18T10:32:49.945Z",
+    "status": "paid",
+    "paymentMethod": "payme",
+    "paymentStatus": "succeeded",
+    "customer": {
+      "fullName": "Алина Соколова",
+      "email": "alina.sokolova@example.com",
+      "phone": "+998 90 987 65 43",
+      "address": "ул. Шахрисабз, д. 15, кв. 42",
+      "city": "Ташкент",
+      "notes": "Позвонить перед доставкой"
+    },
+    "items": [
+      {
+        "productId": "dewy-hydra-essence",
+        "name": "Dewy Cloud Milky Toner",
+        "price": 36,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&w=1000&q=80",
+        "volume": "150 мл"
+      },
+      {
+        "productId": "ultimate-glow-gift-set",
+        "name": "The Royal Glow Signature Collection",
+        "price": 129,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1000&q=80",
+        "volume": "Сет из 4 продуктов"
+      }
+    ],
+    "subtotal": 165,
+    "shipping": 0,
+    "discount": 0,
+    "total": 165,
+    "paymentId": "payme_tx_1794997967966"
+  },
+  {
+    "id": "ORD-7910-GB",
+    "createdAt": "2026-11-18T10:26:47.784Z",
+    "updatedAt": "2026-11-18T10:27:01.649Z",
+    "status": "paid",
+    "paymentMethod": "stripe",
+    "paymentStatus": "succeeded",
+    "customer": {
+      "fullName": "Алина Соколова",
+      "email": "alina.sokolova@example.com",
+      "phone": "+998 90 987 65 43",
+      "address": "ул. Шахрисабз, д. 15, кв. 42",
+      "city": "Ташкент",
+      "notes": "Позвонить перед доставкой"
+    },
+    "items": [
+      {
+        "productId": "glow-radiance-serum",
+        "name": "Rose Quartz Radiance Serum",
+        "price": 48,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=80",
+        "volume": "30 мл"
+      },
+      {
+        "productId": "botanical-bath-salts",
+        "name": "Rose & Lavender Spa Salt Crystals",
+        "price": 26,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80",
+        "volume": "350 г"
+      }
+    ],
+    "subtotal": 74,
+    "shipping": 10,
+    "discount": 0,
+    "total": 84,
+    "paymentId": "cs_test_esdcq6ge019_1794997608681"
+  },
+  {
+    "id": "ORD-2758-GB",
+    "createdAt": "2026-11-18T10:21:13.602Z",
+    "updatedAt": "2026-11-18T10:21:52.123Z",
+    "status": "paid",
+    "paymentMethod": "payme",
+    "paymentStatus": "succeeded",
+    "customer": {
+      "fullName": "???????? ??????",
+      "email": "gulnora@example.uz",
+      "phone": "+998 90 999 88 77",
+      "address": "?-1, ?. 5, ??. 21",
+      "city": "???????",
+      "notes": ""
+    },
+    "items": [
+      {
+        "productId": "glow-radiance-serum",
+        "name": "Rose Quartz Radiance Serum",
+        "price": 48,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be",
+        "volume": "30 ??"
+      }
+    ],
+    "subtotal": 48,
+    "shipping": 10,
+    "discount": 0,
+    "total": 58,
+    "paymentId": "payme_tx_demo_1001"
+  },
+  {
+    "id": "ORD-7821-GB",
+    "createdAt": "2026-11-18T05:21:05.372Z",
+    "updatedAt": "2026-11-18T06:21:05.372Z",
+    "status": "paid",
+    "paymentMethod": "stripe",
+    "paymentStatus": "succeeded",
+    "paymentId": "pi_test_3OQ18b2eZvKYlo2C1gK9p29L",
+    "customer": {
+      "fullName": "Анастасия Воронова",
+      "email": "anastasia.v@example.com",
+      "phone": "+998 90 123 45 67",
+      "address": "ул. Амира Темура, д. 45, кв. 12",
+      "city": "Ташкент",
+      "notes": "Позвонить за 30 минут до доставки"
+    },
+    "items": [
+      {
+        "productId": "glow-radiance-serum",
+        "name": "Rose Quartz Radiance Serum",
+        "price": 48,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=80",
+        "volume": "30 мл"
+      },
+      {
+        "productId": "silk-tint-lipstick",
+        "name": "Silk Petal Cashmere Lipstick",
+        "price": 32,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1000&q=80",
+        "volume": "3.8 г"
+      }
+    ],
+    "subtotal": 80,
+    "shipping": 0,
+    "discount": 8,
+    "discountCode": "GLOW10",
+    "total": 72
+  },
+  {
+    "id": "ORD-6542-GB",
+    "createdAt": "2026-11-17T16:21:05.372Z",
+    "updatedAt": "2026-11-17T18:21:05.372Z",
+    "status": "processing",
+    "paymentMethod": "payme",
+    "paymentStatus": "succeeded",
+    "paymentId": "payme_tx_65df987216a92b",
+    "customer": {
+      "fullName": "Дильноза Каримова",
+      "email": "dilnoza.k@example.uz",
+      "phone": "+998 97 789 12 34",
+      "address": "ул. Навои, д. 18, оф. 4",
+      "city": "Ташкент"
+    },
+    "items": [
+      {
+        "productId": "fleur-de-soie-perfume",
+        "name": "Fleur De Soie Eau de Parfum",
+        "price": 95,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=80",
+        "volume": "50 мл"
+      }
+    ],
+    "subtotal": 95,
+    "shipping": 0,
+    "discount": 0,
+    "total": 95
+  },
+  {
+    "id": "ORD-5198-GB",
+    "createdAt": "2026-11-16T16:21:05.372Z",
+    "updatedAt": "2026-11-17T14:21:05.372Z",
+    "status": "delivered",
+    "paymentMethod": "stripe",
+    "paymentStatus": "succeeded",
+    "paymentId": "pi_test_2NP74a1eXvJKmo1B0fJ8o18K",
+    "customer": {
+      "fullName": "Елена Смирнова",
+      "email": "elena.smirnova@gmail.com",
+      "phone": "+7 916 555 33 22",
+      "address": "Кутузовский пр-т, д. 22, кв. 89",
+      "city": "Москва"
+    },
+    "items": [
+      {
+        "productId": "ultimate-glow-gift-set",
+        "name": "The Royal Glow Signature Collection",
+        "price": 129,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1000&q=80",
+        "volume": "Сет из 4 продуктов"
+      }
+    ],
+    "subtotal": 129,
+    "shipping": 0,
+    "discount": 0,
+    "total": 129
+  }
+]
